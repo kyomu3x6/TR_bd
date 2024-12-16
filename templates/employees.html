@@ -4,6 +4,7 @@
 <table>
     <thead>
         <tr>
+            <th>ID</th>
             <th>fio</th>
             <th>position</th>
             <th>birthdate</th>
@@ -15,6 +16,7 @@
     <tbody>
         {% for employee in employees %}
         <tr>
+            <td>{{ employee.id_employee }}</td>
             <td>{{ employee.fio }}</td>
             <td>{{ employee.position }}</td>
             <td>{{ employee.birthdate }}</td>
@@ -28,6 +30,13 @@
 
 <h2>Manage Employees</h2>
 <form action="/employees" method="post">
+    <select name="action", class="auth-form__input select">
+        <option value="insert", class="auth-form__label">insert</option>
+        <option value="update", class="auth-form__label">update</option>
+        <option value="delete", class="auth-form__label">delete</option>
+    </select>
+    <label for="id_employee">id_employee:</label>
+    <input type="text" id="id_employee" name="id_employee">
     <label for="fio">Full Name:</label>
     <input type="text" id="fio" name="fio">
     <label for="position">Position:</label>

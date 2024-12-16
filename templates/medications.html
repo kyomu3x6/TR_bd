@@ -4,18 +4,20 @@
 <table>
     <thead>
         <tr>
+            <th>ID</th>
             <th>name</th>
-            <th>release form</th>
-            <th>registry form</th>
             <th>quantity</th>
             <th>expiration date</th>
             <th>price</th>
+            <th>registry form</th>
+            <th>release form</th>
             <th>disease id</th>
         </tr>
     </thead>
     <tbody>
         {% for medication in medications %}
         <tr>
+            <td>{{ medication.id_medication }}</td>
             <td>{{ medication.name }}</td>
             <td>{{ medication.quantity }}</td>
             <td>{{ medication.expiration_date }}</td>
@@ -28,7 +30,12 @@
 
 <h2>Добавить медикаменты</h2>
 <form action="/medications" method="post">
-    <label for="name">ID:</label>
+    <select name="action", class="auth-form__input select">
+        <option value="insert", class="auth-form__label">insert</option>
+        <option value="update", class="auth-form__label">update</option>
+        <option value="delete", class="auth-form__label">delete</option>
+    </select>
+    <label for="id_medication">id_medication:</label>
     <input type="text" id="id_medication" name="id_medication">
     <label for="name">Name:</label>
     <input type="text" id="name" name="name">

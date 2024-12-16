@@ -12,7 +12,7 @@
     <tbody>
         {% for department in departments %}
         <tr>
-            <td>{{ department.id }}</td>
+            <td>{{ department.id_department }}</td>
             <td>{{ department.department_name }}</td>
             <td>{{ department.fio_doctor }}</td>
         </tr>
@@ -22,6 +22,13 @@
 
 <h2>Добавить данные о департаментах</h2>
 <form action="/departments" method="post">
+    <select name="action", class="auth-form__input select">
+        <option value="insert", class="auth-form__label">insert</option>
+        <option value="update", class="auth-form__label">update</option>
+        <option value="delete", class="auth-form__label">delete</option>
+    </select>
+    <label for="id_department">id_department:</label>
+    <input type="text" id="id_department" name="id_department">
     <label for="name">department name:</label>
     <input type="text" id="department_name" name="department_name">
     <label for="name">fio doctor:</label>

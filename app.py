@@ -175,15 +175,28 @@ id
 @app.route('/departments', methods=['GET', 'POST'])
 def view_departments():
     """Patients and nurses can view information about doctors."""
-    if 'role' in session and current_role in ['patient', 'nurse', 'superuser']:
+    if 'role' in session and current_role in ['nurse', 'superuser']:
         if request.method == 'POST':
-            department_name = request.form['department_name']
-            fio_doctor = request.form['fio_doctor']
+            action = request.form['action']
+            department_name = request.form['department_name'] if request.form['department_name'] != '' else None
+            fio_doctor = request.form['fio_doctor'] if request.form['fio_doctor'] != '' else None
+            id_department = request.form['id_department']
             # Используем параметризованный запрос
-            cursor.execute(
-                'INSERT INTO departments (department_name, fio_doctor) VALUES (%s, %s)', 
-                (department_name, fio_doctor)
-            )
+            if action == 'insert':
+                cursor.execute(
+                    'INSERT INTO departments (department_name, fio_doctor) VALUES (%s, %s)', 
+                    (department_name, fio_doctor)
+                )
+            elif action == 'update':
+                cursor.execute(
+                    'UPDATE departments SET department_name = %s, fio_doctor = %s WHERE id_department = %s;', 
+                    (department_name, fio_doctor, id_department)
+                )
+            else:
+                cursor.execute(
+                    f'DELETE FROM departments WHERE id_department = {id_department};', 
+                    #(id_department)
+                )
             # Фиксируем изменения в базе данных
             conn.commit()
             return redirect(url_for('view_departments'))
@@ -196,16 +209,42 @@ def edit_medications():
     """Nurses can edit medication details."""
     if 'role' in session and current_role in ['nurse', 'superuser']:
         if request.method == 'POST':
-            medication = Medication(
-                id_medication=request.form['id'],
-                name = request.form['name'],
-                quantity = request.form['quantity'],
-                expiration_date = request.form['expiration_date']
-            )
-            db.session.add(medication)
-            db.session.commit()
-            return redirect(url_for('all_data'))
-        return render_template('medications.html', medication=medication)
+            action = request.form['action']
+            name=request.form['name'] if request.form['name'] != '' else None,
+            quantity=request.form['quantity'] if request.form['quantity'] != '' else None,
+            expiration_date=request.form['expiration_date'] if request.form['expiration_date'] != '' else None,
+            id_medication=request.form['id_medication'] if request.form['id_medication'] != '' else None
+            # Используем параметризованный запрос
+            if action == 'insert':
+                cursor.execute(
+                    'INSERT INTO medications (name, quantity, expiration_date) VALUES (%s, %s, %s)', 
+                    (name, quantity, expiration_date)
+                )
+            elif action == 'update':
+                cursor.execute(
+                    'UPDATE medications SET name = %s, quantity = %s, expiration_date = %s WHERE id_medication = %s;', 
+                    (name, quantity, expiration_date, id_medication)
+                )
+            else:
+                cursor.execute(
+                    f'DELETE FROM medications WHERE id_medication = {id_medication};', 
+                    #(id_department)
+                )
+            conn.commit()
+            # # Создаем новый объект медикамента
+            # medication = Medication(
+            #     name=request.form['name'],
+            #     quantity=request.form['quantity'],
+            #     expiration_date=request.form['expiration_date']
+            # )
+            # db.session.add(medication)
+            # db.session.commit()
+            return redirect(url_for('edit_medications'))
+        
+        # Получаем все записи медикаментов из базы данных
+        medications = Medication.query.all()
+        return render_template('medications.html', medications=medications)  # Передаем список объектов
+    
     return redirect(url_for('no_rights'))
 
 @app.route('/all_data', methods=['GET', 'POST', 'PUT', 'DELETE'])
@@ -220,59 +259,81 @@ def manage_employees():
     employees = Employee.query.all()
     if request.method == 'POST':
         if 'role' in session and current_role in ['hr', 'superuser']:
-            new_employee = Employee(
-                fio=request.form['fio'],
-                position=request.form['position'],
-                birthdate=request.form['birthdate'],
-                phnumber=request.form['phnumber'],
-                email=request.form['email'],
-                department_id=request.form['department_id']
-            )
-            db.session.add(new_employee)
-            db.session.commit()
+            # new_employee = Employee(
+            #     fio=request.form['fio'],
+            #     position=request.form['position'],
+            #     birthdate=request.form['birthdate'],
+            #     phnumber=request.form['phnumber'],
+            #     email=request.form['email'],
+            #     department_id=request.form['department_id']
+            # )
+            # db.session.add(new_employee)
+            # db.session.commit()
+            action = request.form['action']
+            fio=request.form['fio'] if request.form['fio'] != '' else None,
+            position=request.form['position'] if request.form['position'] != '' else None,
+            birthdate=request.form['birthdate'] if request.form['birthdate'] != '' else None,
+            phnumber=request.form['phnumber'] if request.form['phnumber'] != '' else None,
+            email=request.form['email'] if request.form['email'] != '' else None,
+            department_id=request.form['department_id'] if request.form['department_id'] != '' else None,
+            id_employee=request.form['id_employee']
+            if action == 'insert':
+                cursor.execute('INSERT INTO employees (fio, position, birthdate, phnumber, email, department_id) VALUES (%s, %s, %s, %s, %s, %s)', (
+                    fio, position, birthdate, phnumber, email, department_id
+                ))
+            elif action == 'update':
+                cursor.execute(
+                    'UPDATE employees SET fio = %s, position = %s, birthdate = %s, phnumber = %s, email = %s, department_id = %s WHERE id_employee = %s;', 
+                    (fio, position, birthdate, phnumber, email, department_id, id_employee)
+                )
+            else:
+                cursor.execute(
+                    f'DELETE FROM medications WHERE id_medication = {id_medication};', 
+                    #(id_department)
+                )
+            conn.commit()
             return redirect(url_for('manage_employees'))
         else:
             return redirect(url_for('no_rights'))
     if 'role' in session and current_role in ['hr', 'superuser', 'patient', 'nurse']:
         return render_template('employees.html', employees=employees)
 
-@app.route('/patients', methods=['GET'])
+@app.route('/patients', methods=['GET', 'POST'])
 def view_patients():
     """Doctors can view information about all patients."""
     if 'role' in session and current_role in ['administrator','doctor', 'superuser']:
         patients = Patient.query.all()
         if request.method == 'POST':
-            new_patient = Employee(
-                fio=request.form['fio'],
-                birthdate=request.form['birthdate'],
-                disease_id=request.form['disease_id'],
-                department_id=request.form['department_id'],
-            )
-            db.session.add(new_patient)
-            db.session.commit()
-            return redirect(url_for('all_data'))
+            action=request.form['action']
+            if action == 'insert':    
+                cursor.execute("""
+                        CALL ins_patient(%s, %s, %s, %s);
+                    """, (
+                        request.form['fio'] if request.form['fio'] != '' else None,
+                        request.form['birthdate'] if request.form['birthdate'] != '' else None,
+                        request.form['disease_id'] if request.form['disease_id'] != '' else None,
+                        request.form['department_id'] if request.form['department_id'] != '' else None
+                    ))
+            elif action == 'update':    
+                cursor.execute("""
+                        CALL upd_patient(%s, %s, %s, %s, %s);
+                    """, (
+                        request.form['id_patient'],
+                        request.form['fio'],
+                        request.form['birthdate'] if request.form['birthdate'] != '' else None,
+                        request.form['disease_id'] if request.form['disease_id'] != '' else None,
+                        request.form['department_id'] if request.form['department_id'] != '' else None
+                    ))
+            if action == 'delete':    
+                cursor.execute("""
+                        CALL del_patient(%s);
+                    """, (
+                        request.form['id_patient']
+                    ))
+            conn.commit()
+            return redirect(url_for('view_patients'))
         return render_template('patients.html', patients=patients)
     return redirect(url_for('no_rights'))
-
-@app.route('/patients/add', methods=['GET', 'POST'])
-def add_patient():
-    """Administrators can add new patients."""
-    print(current_role)
-    if 'role' in session and current_role in ['administrator', 'superuser']:
-        if request.method == 'POST':
-            new_patient = Patient(
-                fio=request.form['fio'],
-                birthdate=request.form['birthdate'],
-                disease_id=request.form['disease_id'],
-                department_id=request.form['department_id'],
-                editor_id=request.form['editor_id']
-            )
-            db.session.add(new_patient)
-            db.session.commit()
-            return redirect(url_for('view_patients'))
-        return render_template('add_patient.html')
-    return redirect(url_for('no_rights'))
-
 
 @app.route('/patients/<int:id>/edit', methods=['GET', 'POST'])
 def edit_patient_personal_data(id):
