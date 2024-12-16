@@ -7,16 +7,16 @@ from functools import wraps
 from sqlalchemy import text
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:admin@localhost:5432/baza'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:123@localhost:5432/PDE_11_TR'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SECRET_KEY'] = os.urandom(24)
 db = SQLAlchemy(app)
 
 
-conn = psycopg2.connect(database="baza",
+conn = psycopg2.connect(database="PDE_11_TR",
                         host="localhost",
                         user="postgres",
-                        password="admin",
+                        password="123",
                         port="5432")
 cursor = conn.cursor()
 
@@ -179,8 +179,13 @@ def view_departments():
         if request.method == 'POST':
             department_name = request.form['department_name']
             fio_doctor = request.form['fio_doctor']
-            cursor.execute(f'INSERT INTO departments (department_name, fio_doctor) VALUES ({department_name}, {fio_doctor})')
-            cursor.fetchall()
+            # Используем параметризованный запрос
+            cursor.execute(
+                'INSERT INTO departments (department_name, fio_doctor) VALUES (%s, %s)', 
+                (department_name, fio_doctor)
+            )
+            # Фиксируем изменения в базе данных
+            conn.commit()
             return redirect(url_for('view_departments'))
         departments = Department.query.all()
         return render_template('departments.html', departments=departments)
