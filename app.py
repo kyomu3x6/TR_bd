@@ -172,7 +172,7 @@ def all_data():
     return render_template('superuser.html')
 
 id
-@app.route('/departments', methods=['GET'])
+@app.route('/departments', methods=['GET', 'POST'])
 def view_departments():
     """Patients and nurses can view information about doctors."""
     if 'role' in session and current_role in ['patient', 'nurse', 'superuser']:
@@ -212,9 +212,9 @@ def superuser_access():
 def manage_employees():
     
     """HR can add, delete, and modify employee information."""
-    if 'role' in session and current_role in ['hr', 'superuser']:
-        employees = Employee.query.all()
-        if request.method == 'POST':
+    employees = Employee.query.all()
+    if request.method == 'POST':
+        if 'role' in session and current_role in ['hr', 'superuser']:
             new_employee = Employee(
                 fio=request.form['fio'],
                 position=request.form['position'],
@@ -226,9 +226,10 @@ def manage_employees():
             db.session.add(new_employee)
             db.session.commit()
             return redirect(url_for('manage_employees'))
-        employees = Employee.query.all()
+        else:
+            return redirect(url_for('no_rights'))
+    if 'role' in session and current_role in ['hr', 'superuser', 'patient', 'nurse']:
         return render_template('employees.html', employees=employees)
-    return redirect(url_for('no_rights'))
 
 @app.route('/patients', methods=['GET'])
 def view_patients():
