@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Superuser Panel{% endblock %}
+
+{% block content %}
+<header>
+    <h1>Superuser Control Panel</h1>
+</header>
+<main>
+    <section>
+        <h2>Data Management</h2>
+        <ul>
+            <li><a href="{{ url_for('view_departments') }}">Департаменты</a></li>
+            <li><a href="{{ url_for('view_patients') }}">Пациенты</a></li>
+            <li><a href="{{ url_for('manage_employees') }}">Сотрудники</a></li>
+            <li><a href="{{ url_for('edit_medications', id=1) }}">Медикаменты</a></li>
+        </ul>
+    </section>
+    <section>
+        <h2>Actions</h2>
+        <p>Use the links above to access and modify data. This panel grants you full control over all database operations.</p>
+    </section>
+</main>
+{% endblock %}

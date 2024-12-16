@@ -1,0 +1,17 @@
+header{
+    position: sticky;
+    top: 0;
+    padding: 10px;
+    z-index: 1000;
+    background-color: gainsboro;
+}
+
+.header__img{
+    height: 48px;
+    width: 48px;
+}
+
+body{
+    background-color: gainsboro;
+}
+

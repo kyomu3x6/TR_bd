@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Departments</h2>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Department Name</th>
+            <th>Doctor</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for department in departments %}
+        <tr>
+            <td>{{ department.id }}</td>
+            <td>{{ department.department_name }}</td>
+            <td>{{ department.fio_doctor }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h2>Добавить данные о департаментах</h2>
+<form action="/patients" method="post">
+    <label for="name">department name:</label>
+    <input type="text" id="department_name" name="department_name">
+    <label for="name">fio doctor:</label>
+    <input type="text" id="fio_doctor" name="fio_doctor">
+    <button type="submit">Update patients</button>
+</form>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Сотрудники</h2>
+<table>
+    <thead>
+        <tr>
+            <th>fio</th>
+            <th>position</th>
+            <th>birthdate</th>
+            <th>phone</th>
+            <th>email</th>
+            <th>department id</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for employee in employees %}
+        <tr>
+            <td>{{ employee.fio }}</td>
+            <td>{{ employee.position }}</td>
+            <td>{{ employee.birthdate }}</td>
+            <td>{{ employee.phone }}</td>
+            <td>{{ employee.email }}</td>
+            <td>{{ employee.department_id }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h2>Manage Employees</h2>
+<form action="/employees" method="post">
+    <label for="fio">Full Name:</label>
+    <input type="text" id="fio" name="fio">
+    <label for="position">Position:</label>
+    <input type="text" id="position" name="position">
+    <label for="birthdate">Birthdate:</label>
+    <input type="date" id="birthdate" name="birthdate">
+    <label for="phnumber">Phone Number:</label>
+    <input type="text" id="phnumber" name="phnumber">
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email">
+    <label for="department_id">Department ID:</label>
+    <input type="number" id="department_id" name="department_id">
+    <button type="submit">Add Employee</button>
+</form>
+{% endblock %}

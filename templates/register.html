@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>authorize</title>
+<link rel="stylesheet" href="../static/css/authorization.css">
+</head>
+<body>
+
+    <div class="modal__background">
+        <div class="modal__window">
+    
+            <form class="auth-form" name="form-auth" method="post">
+    
+                <label class="auth-form__label">
+                    <span class="auth-form__placeholder">email</span>
+                    <input class="auth-form__input input-email" type="email" name="username" autocomplete="off" required>
+                </label>
+    
+                <label class="auth-form__label">
+                    <span class="auth-form__placeholder">password</span>
+                    <input class="auth-form__input input-password" type="password" name="password" autocomlete="off" required>
+                    <div class="auth-form__toggler">
+                        <i class="la la-eye auth-form__icon"></i>
+                        <input type="checkbox" class="auth-form__checkbox password-toggler">
+                    </div>
+                </label>
+                
+                <select name="role", class="auth-form__input select">
+                    <option value="patient", class="auth-form__label">patient</option>
+                    <option value="nurse", class="auth-form__label">nurse</option>
+                    <option value="superuser", class="auth-form__label">superuser</option>
+                    <option value="HR", class="auth-form__label">HR</option>
+                    <option value="doctor", class="auth-form__label">doctor</option>
+                        <option value="administrator", class="auth-form__label">administrator</option>
+                </select>
+                <!-- <label class="auth-form__label">
+                    <span class="auth-form__placeholder">role</span>
+                    <input class="auth-form__input input-email" type="email" name="email" autocomplete="off" required>
+                </label> -->
+    
+                <div class="auth-form__answer"></div>
+    
+                <input class="auth-form__submit" type="submit" value="Register">
+                
+        
+            </form>
+    
+        </div>
+    </div>
+    
+    <div class="hint"></div>
+
+
+    <script src="../static/js/authorization.js"></script>
+</body>
+</html>

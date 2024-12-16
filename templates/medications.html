@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Медикаменты</h2>
+<table>
+    <thead>
+        <tr>
+            <th>name</th>
+            <th>release form</th>
+            <th>registry form</th>
+            <th>quantity</th>
+            <th>expiration date</th>
+            <th>price</th>
+            <th>disease id</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for medication in medications %}
+        <tr>
+            <td>{{ medication.name }}</td>
+            <td>{{ medication.quantity }}</td>
+            <td>{{ medication.expiration_date }}</td>
+            <td>{{ medication.price }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+<h2>Добавить медикаменты</h2>
+<form action="/medications" method="post">
+    <label for="name">ID:</label>
+    <input type="text" id="id_medication" name="id_medication">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name">
+    <label for="quantity">Quantity:</label>
+    <input type="number" id="quantity" name="quantity">
+    <label for="expiration_date">Expiration Date:</label>
+    <input type="date" id="expiration_date" name="expiration_date">
+    <button type="submit">Update Medication</button>
+</form>
+{% endblock %}

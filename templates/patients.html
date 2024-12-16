@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Пациенты</h2>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Birthdate</th>
+            <th>Disease</th>
+            <th>Department</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for patient in patients %}
+        <tr>
+            <td>{{ patient.id }}</td>
+            <td>{{ patient.fio }}</td>
+            <td>{{ patient.birthdate }}</td>
+            <td>{{ patient.disease_id }}</td>
+            <td>{{ patient.department_id }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+<h2>Добавить данные о пациентах</h2>
+<form action="/patients" method="post">
+    <label for="name">fio:</label>
+    <input type="text" id="fio" name="fio">
+    <label for="name">birthdate:</label>
+    <input type="text" id="birthdate" name="birthdate">
+    <label for="disease_id">disease id:</label>
+    <input type="number" id="disease_id" name="disease_id">
+    <label for="department_id">department id:</label>
+    <input type="number" id="department_id" name="department_id">
+    <button type="submit">Update patients</button>
+</form>
+{% endblock %}
